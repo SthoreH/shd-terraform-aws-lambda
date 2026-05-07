@@ -1,0 +1,32 @@
+name: CI
+
+on:
+  pull_request:
+    branches: [main]
+
+permissions:
+  id-token: write
+  contents: read
+
+jobs:
+  validate-pr:
+    name: Pull Request Validate
+    runs-on: ubuntu-latest
+    steps:
+      - uses: SthoreH/shd-github-actions-workflows/actions/validate-pr@main
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          validate-title: "false"
+          validate-description: "false"
+
+  validate-terraform:
+    name: Terraform Validate
+    if: github.base_ref == 'dev'
+    runs-on: ubuntu-latest
+    environment: dev
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: SthoreH/shd-github-actions-workflows/actions/validate-terraform-module@main
+        with:
+          terraform_version: 1.14.9

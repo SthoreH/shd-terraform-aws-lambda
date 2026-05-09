@@ -9,8 +9,8 @@ resource "aws_lambda_function" "this" {
   memory_size      = var.memory
   timeout          = var.timeout
   architectures    = var.architectures
-  filename         = var.zip_file_path
-  source_code_hash = filebase64sha256(var.zip_file_path)
+  filename         = var.zip_file_path != "" ? var.zip_file_path : null
+  source_code_hash = var.zip_file_path != "" && fileexists(var.zip_file_path) ? filebase64sha256(var.zip_file_path) : null
 
   layers                         = var.layers
   reserved_concurrent_executions = var.concurrent_executions  
